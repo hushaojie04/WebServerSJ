@@ -26,6 +26,10 @@ public class JDBCHandler {
 
 	public JDBCHandler() {
 		// STEP 2: Register JDBC driver
+		connectJDBC();
+	}
+
+	private void connectJDBC() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			// STEP 3: Open a connection
@@ -38,20 +42,18 @@ public class JDBCHandler {
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			LogUtil.print("ClassNotFoundException "+e.getLocalizedMessage());
+			LogUtil.print("ClassNotFoundException " + e.getLocalizedMessage());
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			LogUtil.print("SQLException "+e.getErrorCode());
+			LogUtil.print("SQLException " + e.getErrorCode());
 
-		}finally{
+		} finally {
 		}
 	}
 
-	public String query(String table) {
-		String sql;
-		sql = "SELECT * FROM "+table;
+	public String query(String sql) {
 		String result = "";
 		try {
 			ResultSet rs = stmt.executeQuery(sql);
@@ -61,6 +63,11 @@ public class JDBCHandler {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			LogUtil.print("" + e.getSQLState());
+			LogUtil.print("" + e.getMessage());
+
+			 connectJDBC();
+			return query(sql);
 		}
 		return result;
 	}
