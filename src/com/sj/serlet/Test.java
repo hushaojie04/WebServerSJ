@@ -75,7 +75,9 @@ public class Test extends HttpServlet {
 				sql = "SELECT * FROM " + request.getParameter("table");
 				data = mJDBCHandler.query(sql);
 			} else if (request.getQueryString().contains("arttype")) {
-				sql = createSQLForArcType(request.getParameter("arttype"));
+				sql = createSQLForArcType(request.getParameter("arttype"),
+						request.getParameter("start"),
+						request.getParameter("end"));
 				data = handleData(mJDBCHandler.query(sql),
 						request.getParameter("arttype"));
 			} else if (request.getQueryString().contains("aid")
@@ -119,31 +121,47 @@ public class Test extends HttpServlet {
 		return sql;
 	}
 
-	private String createSQLForArcType(String reid) {
+	private String createSQLForArcType(String reid, String param1, String param2) {
 		String sql = "";
 		switch (reid) {
 		case "0":
 			sql = "SELECT ID,typename  FROM dede_arctype Where reID = 0";
 			break;
 		default:
-			sql = "SELECT dede_archives.id,dede_archives.typeid,dede_archives.title,dede_archives.senddate,"
-					+ "dede_archives.shorttitle,dede_archives.writer,dede_archives.description,"
-					+ "dede_archives.flag,dede_archives.keywords"
-					+ " FROM dede_arctype,dede_archives"
-					+ " Where "
-					+ " dede_archives.typeid=dede_arctype.id AND"
-					+ " dede_arctype.id IN (SELECT dede_arctype.id FROM dede_arctype WHERE dede_arctype.reID="
-					+ reid
-					+ " OR "
-					+ " dede_arctype.id="
-					+ reid
-					+ ")"
-					+ " ORDER BY dede_archives.senddate DESC";
+			if (param1 == null || param2 == null)
+				sql = "SELECT dede_archives.id,dede_archives.typeid,dede_archives.title,dede_archives.senddate,"
+						+ "dede_archives.shorttitle,dede_archives.writer,dede_archives.description,"
+						+ "dede_archives.flag,dede_archives.keywords"
+						+ " FROM dede_arctype,dede_archives"
+						+ " Where "
+						+ " dede_archives.typeid=dede_arctype.id AND"
+						+ " dede_arctype.id IN (SELECT dede_arctype.id FROM dede_arctype WHERE dede_arctype.reID="
+						+ reid
+						+ " OR "
+						+ " dede_arctype.id="
+						+ reid
+						+ ")"
+						+ " ORDER BY dede_archives.senddate DESC";
+			else
+				sql = "SELECT dede_archives.id,dede_archives.typeid,dede_archives.title,dede_archives.senddate,"
+						+ "dede_archives.shorttitle,dede_archives.writer,dede_archives.description,"
+						+ "dede_archives.flag,dede_archives.keywords"
+						+ " FROM dede_arctype,dede_archives"
+						+ " Where "
+						+ " dede_archives.typeid=dede_arctype.id AND"
+						+ " dede_arctype.id IN (SELECT dede_arctype.id FROM dede_arctype WHERE dede_arctype.reID="
+						+ reid
+						+ " OR "
+						+ " dede_arctype.id="
+						+ reid
+						+ ")"
+						+ " ORDER BY dede_archives.senddate DESC"
+						+ " LIMIT "
+						+ param1 + "," + param2;
 			break;
 		}
 		return sql;
 	}
-	// + " dede_archives.typeid = dede_addonarticle.typeid AND"
-	// + " dede_archives.id = dede_addonarticle.aid"
+
 
 }
