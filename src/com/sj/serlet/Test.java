@@ -40,7 +40,6 @@ public class Test extends HttpServlet {
 		// TODO Auto-generated constructor stub
 		mJDBCHandler = new JDBCHandler();
 		String data = mJDBCHandler.query("SELECT *  FROM dede_arcatt");
-
 		JSONArray jsonArray = JSONArray.fromObject(data);
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject object = jsonArray.getJSONObject(i);
